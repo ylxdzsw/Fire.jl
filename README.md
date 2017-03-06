@@ -1,7 +1,7 @@
 Fire.jl
 =======
 
-Fire.jl is a library for creating simple CLI from julia function definitions. Inspired by [python-fire](https://github.com/google/python-fire)
+Fire.jl is a library for creating simple CLI from julia function definitions. Inspired by [python-fire](https://github.com/google/python-fire).
 
 ### Installation
 
@@ -12,7 +12,7 @@ Pkg.clone("https://github.com/ylxdzsw/Fire.jl")
 ### Basic Usage
 
 1. put `using Fire` into your file
-2. put `@main` in front of your entry function
+2. put `@main` in front of your entry functions
 3. (optional) add shebang and chmod to save a word in commandline
 4. enjoy
 
@@ -89,6 +89,6 @@ This package is highly inspired by [python-fire](https://github.com/google/pytho
 
 - String / AbstractString / Symbol
 - "basic" number types like `Int32`, `AbstractFloat`, etc.
-- Vector of above types
 - VarArgs of above types
-- Bool is only allowed in optional arguments, and will be parsed as flag.
+- Vector of above types is allowed in optional arguments
+- Bool is allowed in optional arguments, and will be parsed as flag
