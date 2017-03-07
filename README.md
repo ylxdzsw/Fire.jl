@@ -40,7 +40,7 @@ $ julia example.jl "hello world!" 1
 hello world!
 
 $ julia example.jl "hello world!" 1 --color red
-hello world! // in red :)
+hello world!
 
 $ julia example.jl "hello world!" badguy
 Error parsing positional argument `times`: require `Integer`, but got "badguy"
