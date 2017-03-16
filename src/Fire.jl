@@ -100,6 +100,7 @@ function parse_command_line()
     let ARGS = copy(ARGS)
         pargs, oargs = [], Dict{Symbol, Any}()
         entry = if length(entries) > 1
+            isempty(ARGS) && return print_help_all()
             cmd = shift!(ARGS)
             if cmd == "--help"
                 return print_help_all()
