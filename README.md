@@ -1,12 +1,14 @@
 Fire.jl
 =======
 
+[![Build Status](https://travis-ci.org/ylxdzsw/Fire.jl.svg?branch=master)](https://travis-ci.org/ylxdzsw/Fire.jl)
+
 Fire.jl is a library for creating simple CLI from julia function definitions. Inspired by [python-fire](https://github.com/google/python-fire).
 
 ### Installation
 
 ```julia
-Pkg.clone("https://github.com/ylxdzsw/Fire.jl")
+Pkg.add("Fire")
 ```
 
 ### Basic Usage

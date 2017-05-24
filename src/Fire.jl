@@ -7,7 +7,7 @@ import Base.Meta: quot
 
 export @main
 
-type FuncDef
+immutable FuncDef
     name::Symbol
     args::Vector
     kwargs::Vector
