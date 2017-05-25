@@ -1,4 +1,14 @@
 using Base.Test
+if !isdefined(Base.Test, Symbol("@test_nowarn"))
+    macro test_nowarn(x)
+        esc(x)
+    end
+end
+if !isdefined(Base.Test, Symbol("@test_warn"))
+    macro test_warn(x, y)
+        esc(y)
+    end
+end
 
 const test_file = let
     dir, cnt = mktempdir(), 0
@@ -110,3 +120,5 @@ end
         contains(a, "--y: Integer")
     end
 end
+
+rm(dirname(test_file("")), recursive=true)
