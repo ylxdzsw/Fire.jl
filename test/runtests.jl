@@ -1,7 +1,12 @@
 using Base.Test
-if !isdefined(Base.Test, symbol("@test_nowarn"))
+if !isdefined(Base.Test, Symbol("@test_nowarn"))
     macro test_nowarn(x)
         esc(x)
+    end
+end
+if !isdefined(Base.Test, Symbol("@test_warn"))
+    macro test_nowarn(x, y)
+        esc(y)
     end
 end
 
