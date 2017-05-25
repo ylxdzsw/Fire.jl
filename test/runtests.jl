@@ -5,7 +5,7 @@ if !isdefined(Base.Test, Symbol("@test_nowarn"))
     end
 end
 if !isdefined(Base.Test, Symbol("@test_warn"))
-    macro test_nowarn(x, y)
+    macro test_warn(x, y)
         esc(y)
     end
 end
