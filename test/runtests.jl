@@ -24,6 +24,7 @@ end
     """)
 
     @test length(read(`julia $f`)) == 0
+    rm(dirname(f), recursive=true)
 
     f = test_file("""
         @main function main()
@@ -32,6 +33,7 @@ end
     """)
 
     @test length(read(`julia $f`)) != 0
+    rm(dirname(f), recursive=true)
 end
 
 @testset "types" begin
@@ -42,6 +44,7 @@ end
     """)
 
     @test_nowarn run(`julia $f 4`)
+    rm(dirname(f), recursive=true)
 
     f = test_file("""
         @main function main(x::Symbol)
@@ -50,6 +53,7 @@ end
     """)
 
     @test_nowarn run(`julia $f 4`)
+    rm(dirname(f), recursive=true)
 
     f = test_file("""
         @main function main(x::AbstractFloat)
@@ -59,6 +63,7 @@ end
 
     @test_nowarn run(`julia $f 4e-2`)
     @test_warn r"." run(`julia $f foo`)
+    rm(dirname(f), recursive=true)
 end
 
 @testset "kwargs" begin
@@ -71,6 +76,7 @@ end
     @test readchomp(`julia $f 4`) == "9"
     @test readchomp(`julia $f 4 --y 1`) == "8"
     @test readchomp(`julia $f 4 --y 1 --z 2`) == "7"
+    rm(dirname(f), recursive=true)
 
     f = test_file("""
         @main function main(; n::Vector{Int}=[2, 3], mult::Bool=false)
@@ -82,6 +88,7 @@ end
     @test readchomp(`julia $f --mult`) == "6"
     @test readchomp(`julia $f --n 2 3 4 5`) == "14"
     @test readchomp(`julia $f --n 2 3 4 5 --mult`) == "120"
+    rm(dirname(f), recursive=true)
 end
 
 @testset "splat" begin
@@ -93,6 +100,7 @@ end
 
     @test readchomp(`julia $f 2 3 4`) == "14"
     @test readchomp(`julia $f 2 3 4 5`) == "24"
+    rm(dirname(f), recursive=true)
 end
 
 @testset "help" begin
@@ -109,4 +117,5 @@ end
         contains(a, "default: 3") &&
         contains(a, "--y: Integer")
     end
+    rm(dirname(f), recursive=true)
 end
