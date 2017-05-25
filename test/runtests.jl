@@ -1,4 +1,9 @@
 using Base.Test
+if !isdefined(Base.Test, symbol("@test_nowarn"))
+    macro test_nowarn(x)
+        esc(x)
+    end
+end
 
 const test_file = let
     dir, cnt = mktempdir(), 0
