@@ -7,7 +7,7 @@ import Base.Meta: quot
 
 export @main
 
-immutable FuncDef
+struct FuncDef
     name::Symbol
     args::Vector
     kwargs::Vector
@@ -25,7 +25,7 @@ const VARLENGTH = 0x03
 
 const entries   = FuncDef[]
 const typecache = Dict(1=>String)
-const typecount = ((c) -> () -> c += 1)(1)
+const typecount = (c -> () -> c += 1)(1)
 
 function __init__()
     atexit(parse_command_line)
@@ -101,12 +101,12 @@ function parse_command_line()
         pargs, oargs = [], Dict{Symbol, Any}()
         entry = if length(entries) > 1
             isempty(ARGS) && return print_help_all()
-            cmd = shift!(ARGS)
+            cmd = popfirst!(ARGS)
             if cmd == "--help"
                 return print_help_all()
             else
                 i = findfirst(x->x.name == Symbol(cmd), entries)
-                i == 0 && return println(STDERR, "ERROR: unknown command $cmd, see --help for more avaliable commands")
+                i == 0 && return println(stderr, "ERROR: unknown command $cmd, see --help for more avaliable commands")
                 entries[i]
             end
         else
@@ -122,7 +122,7 @@ function parse_command_line()
         i = 1
 
         while !isempty(ARGS)
-            x = shift!(ARGS)
+            x = popfirst!(ARGS)
             if startswith(x, "--")
                 if x == "--help"
                     return print_help_entry(entry)
@@ -131,7 +131,7 @@ function parse_command_line()
                 x = Symbol(x[3:end])
 
                 arg = let ind = findfirst(y->y[1] == x, entry.kwargs)
-                    ind != 0 ? entry.kwargs[ind] : return println(STDERR, "Unknown option --$x, see --help for avaliable options")
+                    ind != 0 ? entry.kwargs[ind] : return println(stderr, "Unknown option --$x, see --help for avaliable options")
                 end
 
                 if arg[2] == Bool
@@ -140,26 +140,26 @@ function parse_command_line()
                     oargs[arg[1]] = arg[2]()
                     while !isempty(ARGS)
                         x = ARGS[1]
-                        startswith(x, "--") ? break : shift!(ARGS)
+                        startswith(x, "--") ? break : popfirst!(ARGS)
                         push!(oargs[arg[1]], parse_with_type(eltype(arg[2]), x))
                     end
                 elseif arg[2] in BASIC_TYPES
-                    if isempty(ARGS) || (x = shift!(ARGS); startswith(x, "--"))
-                        return println(STDERR, "Option --$(arg[1]) need an argument")
+                    if isempty(ARGS) || (x = popfirst!(ARGS); startswith(x, "--"))
+                        return println(stderr, "Option --$(arg[1]) need an argument")
                     end
 
                     oargs[arg[1]] = parse_with_type(arg[2], x)
                 else
-                    return println(STDERR, "Argument type $(arg[2]) is not supported by Fire.jl")
+                    return println(stderr, "Argument type $(arg[2]) is not supported by Fire.jl")
                 end
             else
                 if i > length(entry.args)
-                    return println(STDERR, "Too many arguments, see --help for list of arguments")
+                    return println(stderr, "Too many arguments, see --help for list of arguments")
                 end
 
                 arg = entry.args[i]
 
-                arg[2] in BASIC_TYPES || return println(STDERR, "Argument type $(arg[2]) is not supported by Fire.jl")
+                arg[2] in BASIC_TYPES || return println(stderr, "Argument type $(arg[2]) is not supported by Fire.jl")
 
                 push!(pargs, parse_with_type(arg[2], x))
 
@@ -172,7 +172,7 @@ function parse_command_line()
         number_of_required_arguments = count(x->x[3]==REQUIRED, entry.args)
 
         if length(pargs) < number_of_required_arguments
-            return println(STDERR, "Need $number_of_required_arguments positional arguments, see --help for what are them")
+            return println(stderr, "Need $number_of_required_arguments positional arguments, see --help for what are them")
         end
 
         entry.func(pargs...; oargs...)

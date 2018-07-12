@@ -1,19 +1,9 @@
-using Base.Test
-if !isdefined(Base.Test, Symbol("@test_nowarn"))
-    macro test_nowarn(x)
-        esc(x)
-    end
-end
-if !isdefined(Base.Test, Symbol("@test_warn"))
-    macro test_warn(x, y)
-        esc(y)
-    end
-end
+using Test
 
 const test_file = let
     dir, cnt = mktempdir(), 0
 
-    function test_file(code)
+    local function test_file(code)
         filename = joinpath(dir, "test$cnt.jl")
 
         open(filename, "w") do f
@@ -97,7 +87,7 @@ end
 @testset "splat" begin
     f = test_file("""
         @main function main(x::Integer, y::Integer...)
-            println(x * +(y...))
+            println(x * +(y...,))
         end
     """)
 
@@ -114,10 +104,10 @@ end
     """)
 
     @test begin
-        a = readstring(`julia $f --help`)
-        contains(a, "this is the doc string") &&
-        contains(a, "default: 3") &&
-        contains(a, "--y: Integer")
+        a = read(`julia $f --help`, String)
+        all(("this is the doc string", "default: 3", "--y: Integer")) do x
+            occursin(x, a)
+        end
     end
 end
 
