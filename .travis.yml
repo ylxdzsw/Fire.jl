@@ -3,6 +3,6 @@ os:
   - osx
   - linux
 julia:
-  - nightly
+  - 0.7
 script:
   - julia -e 'Pkg.clone(pwd()); Pkg.test("Fire")'

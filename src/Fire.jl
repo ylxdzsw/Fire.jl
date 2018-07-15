@@ -23,9 +23,7 @@ const REQUIRED  = 0x01
 const OPTIONAL  = 0x02
 const VARLENGTH = 0x03
 
-const entries   = FuncDef[]
-const typecache = Dict(1=>String)
-const typecount = (c -> () -> c += 1)(1)
+const entries = FuncDef[]
 
 function __init__()
     atexit(parse_command_line)
@@ -41,27 +39,21 @@ function parse_function_definition(f)
 
     for def in defs
         if isa(def, Symbol)
-            push!(args.args, Expr(:tuple, quot(def), :($typecache[1]), REQUIRED))
+            push!(args.args, Expr(:tuple, quot(def), String, REQUIRED))
         elseif def.head == :(::)
-            x = typecount()
-            def.args[2] = :( $typecache[$x] = $(def.args[2]) )
-            push!(args.args, Expr(:tuple, quot(def.args[1]), :($typecache[$x]), REQUIRED))
+            push!(args.args, Expr(:tuple, quot(def.args[1]), esc(def.args[2]), REQUIRED))
         elseif def.head == :kw
             if isa(def.args[1], Symbol)
-                push!(args.args, Expr(:tuple, quot(def.args[1]), :($typecache[1]), OPTIONAL, quot(def.args[2])))
+                push!(args.args, Expr(:tuple, quot(def.args[1]), String, OPTIONAL, quot(def.args[2])))
             else
-                x = typecount()
-                def.args[1].args[2] = :( $typecache[$x] = $(def.args[1].args[2]) )
-                push!(args.args, Expr(:tuple, quot(def.args[1].args[1]), :($typecache[$x]), OPTIONAL, quot(def.args[2])))
+                push!(args.args, Expr(:tuple, quot(def.args[1].args[1]), esc(def.args[1].args[2]), OPTIONAL, quot(def.args[2])))
             end
         elseif def.head == :(...)
             def = def.args[1]
             if isa(def, Symbol)
-                push!(args.args, Expr(:tuple, quot(def), :($typecache[1]), VARLENGTH))
+                push!(args.args, Expr(:tuple, quot(def), String, VARLENGTH))
             else
-                x = typecount()
-                def.args[2] = :( $typecache[$x] = $(def.args[2]) )
-                push!(args.args, Expr(:tuple, quot(def.args[1]), :($typecache[$x]), VARLENGTH))
+                push!(args.args, Expr(:tuple, quot(def.args[1]), esc(def.args[2]), VARLENGTH))
             end
         elseif def.head == :parameters
             for def in def.args
@@ -69,11 +61,9 @@ function parse_function_definition(f)
                     error("Fire.jl don't support var length keyword argument")
                 end
                 if isa(def.args[1], Symbol)
-                    push!(kwargs.args, Expr(:tuple, quot(def.args[1]), :($typecache[1]), quot(def.args[2])))
+                    push!(kwargs.args, Expr(:tuple, quot(def.args[1]), String, quot(def.args[2])))
                 else
-                    x = typecount()
-                    def.args[1].args[2] = :( $typecache[$x] = $(def.args[1].args[2]) )
-                    push!(kwargs.args, Expr(:tuple, quot(def.args[1].args[1]), :($typecache[$x]), quot(def.args[2])))
+                    push!(kwargs.args, Expr(:tuple, quot(def.args[1].args[1]), esc(def.args[1].args[2]), quot(def.args[2])))
                 end
             end
         else
