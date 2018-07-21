@@ -95,8 +95,8 @@ function parse_command_line()
             if cmd == "--help"
                 return print_help_all()
             else
-                i = findfirst(x->x.name == Symbol(cmd), entries)
-                i == 0 && return println(stderr, "ERROR: unknown command $cmd, see --help for more avaliable commands")
+                i = findfirst(x->x.name == Symbol(replace(cmd, '-' => '_')), entries)
+                i == nothing && return println(stderr, "ERROR: unknown command $cmd, see --help for more avaliable commands")
                 entries[i]
             end
         else
@@ -120,8 +120,8 @@ function parse_command_line()
 
                 x = Symbol(x[3:end])
 
-                arg = let ind = findfirst(y->y[1] == x, entry.kwargs)
-                    ind != 0 ? entry.kwargs[ind] : return println(stderr, "Unknown option --$x, see --help for avaliable options")
+                arg = let ind = findfirst(y->y[1] == Symbol(replace(String(x), '-' => '_')), entry.kwargs)
+                    ind != nothing ? entry.kwargs[ind] : return println(stderr, "Unknown option --$x, see --help for avaliable options")
                 end
 
                 if arg[2] == Bool
@@ -172,7 +172,7 @@ end
 function print_help_all()
     println("See --help of each command for usages")
     for entry in entries
-        println("  ", entry.name)
+        println("  ", replace(String(entry.name), '_' => '-'))
     end
     println()
 end
@@ -182,7 +182,7 @@ function print_help_entry(entry)
     if !isempty(entry.args)
         println("Positional Arguments:")
         for i in entry.args
-            print("  ", i[1], ": ", i[2])
+            print("  ", replace(String(i[1]), '_' => '-'), ": ", i[2])
             i[3] == REQUIRED  ? println() :
             i[3] == OPTIONAL  ? println(" (default: $(i[4]))") :
             i[3] == VARLENGTH ? println("...") :
@@ -193,7 +193,7 @@ function print_help_entry(entry)
     if !isempty(entry.kwargs)
         println("Optional Arguments:")
         for i in entry.kwargs
-            println("  --", i[1], ": ", i[2], " (default: $(i[3]))")
+            println("  --", replace(String(i[1]), '_' => '-'), ": ", i[2], " (default: $(i[3]))")
         end
         println()
     end

@@ -111,4 +111,22 @@ end
     end
 end
 
+@testset "dash to underscore" begin
+    f = test_file("""
+        @main function f_1(; arg_1="string_1", arg_2="string-2")
+            println(arg_1, arg_2)
+        end
+
+        @main function f_2()
+            nothing
+        end
+    """)
+
+    @test readchomp(`julia $f f-1 --arg-1 mystr-1 --arg_2 mystr_2`) == "mystr-1mystr_2"
+
+    @test occursin("f-1", read(`julia $f --help`, String))
+
+    @test occursin("arg-2", read(`julia $f f-1 --help`, String))
+end
+
 rm(dirname(test_file("")), recursive=true)
