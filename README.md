@@ -1,9 +1,10 @@
 Fire.jl
 =======
 
+[![Build Status](https://travis-ci.org/ylxdzsw/Fire.jl.svg?branch=master)](https://travis-ci.org/ylxdzsw/Fire.jl)
 [![](http://pkg.julialang.org/badges/Fire_0.5.svg)](http://pkg.julialang.org/?pkg=Fire)
 [![](http://pkg.julialang.org/badges/Fire_0.6.svg)](http://pkg.julialang.org/?pkg=Fire)
-[![](http://pkg.julialang.org/badges/Fire_0.7.svg)](http://pkg.julialang.org/?pkg=Fire)
+![Julia v1.0 ready](https://blog.ylxdzsw.com/_static/julia_v1.0_ready.svg)
 
 Fire.jl is a library for creating simple CLI from julia function definitions.
 
