@@ -96,7 +96,7 @@ function parse_command_line()
                 return print_help_all()
             else
                 i = findfirst(x->x.name == Symbol(replace(cmd, '-' => '_')), entries)
-                i == nothing && return println(stderr, "ERROR: unknown command $cmd, see --help for more avaliable commands")
+                i == nothing && return println(stderr, "ERROR: unknown command $cmd, see --help for available commands")
                 entries[i]
             end
         else
@@ -121,7 +121,7 @@ function parse_command_line()
                 x = Symbol(x[3:end])
 
                 arg = let ind = findfirst(y->y[1] == Symbol(replace(String(x), '-' => '_')), entry.kwargs)
-                    ind != nothing ? entry.kwargs[ind] : return println(stderr, "Unknown option --$x, see --help for avaliable options")
+                    ind != nothing ? entry.kwargs[ind] : return println(stderr, "Unknown option --$x, see --help for available options")
                 end
 
                 if arg[2] == Bool
@@ -135,7 +135,7 @@ function parse_command_line()
                     end
                 elseif arg[2] in BASIC_TYPES
                     if isempty(ARGS) || (x = popfirst!(ARGS); startswith(x, "--"))
-                        return println(stderr, "Option --$(arg[1]) need an argument")
+                        return println(stderr, "Option --$(arg[1]) needs an argument")
                     end
 
                     oargs[arg[1]] = parse_with_type(arg[2], x)
@@ -162,7 +162,7 @@ function parse_command_line()
         number_of_required_arguments = count(x->x[3]==REQUIRED, entry.args)
 
         if length(pargs) < number_of_required_arguments
-            return println(stderr, "Need $number_of_required_arguments positional arguments, see --help for what are them")
+            return println(stderr, "Need $number_of_required_arguments positional arguments, see --help for available arguments")
         end
 
         entry.func(pargs...; oargs...)
