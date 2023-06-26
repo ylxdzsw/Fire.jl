@@ -8,29 +8,29 @@ Fire.jl is a library for creating simple CLI from julia function definitions.
 ### Installation
 
 ```julia
+import Pkg
 Pkg.add("Fire")
 ```
 
-### Basic Usage
+### Usage
 
-1. put `using Fire` into your file
-2. put `@main` in front of your entry functions
-3. (optional) add shebang and chmod to save a word in commandline
-4. enjoy
+1. put `using Fire` on the top
+2. put `@main` in front of the entry function
+3. (optional) add `#!/usr/bin/env julia` and `chmod +x`
 
 ```julia
 using Fire
 
-"Your Doc String"
+"Very Descriptive Doc String"
 @main function repeat_string(message::AbstractString, times::Integer=3; color::Symbol=:normal)
     times < 0 && throw(ArgumentError("cannot repeat negative times"))
     for i in 1:times
-        print_with_color(color, message)
+        printstyled(message, '\n'; color)
     end
 end
 ```
 
-Then you can call `repeat_string` at commandline (assume the file is called "example.jl")
+Then this function can be used at commandline (assuming the file is called "example.jl")
 
 ```
 $ julia example.jl hello
@@ -38,28 +38,24 @@ hello
 hello
 hello
 
-$ julia example.jl "hello world!" 1
+$ julia example.jl 'hello world!' 1
 hello world!
 
-$ julia example.jl "hello world!" 1 --color red
+$ julia example.jl 'hello world!' 1 --color red
 hello world!
-
-$ julia example.jl "hello world!" badguy
-Error parsing positional argument `times`: require `Integer`, but got "badguy"
-`--help` for usages
 
 $ julia example.jl --help
-Your Doc String
+Very Descriptive Doc String
 
 Positional Arguments:
     str: AbstractString
     times: Integer (default: 3)
 
 Optional Arguments:
-    color: Symbol (default: normal)
+    color: Symbol (default: :normal)
 ```
 
-Multiple entries are supported. You can call each function by name.
+Multiple entries are supported.
 
 ```julia
 using Fire
@@ -83,7 +79,7 @@ false
 
 ### Why is it called Fire?
 
-This package is highly inspired by [python-fire](https://github.com/google/python-fire)
+This package is inspired by [python-fire](https://github.com/google/python-fire)
 
 ### Details
 
